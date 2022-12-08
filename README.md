@@ -33,6 +33,8 @@ These are following steps to setup project:
 
 ```
 cp .env.example .env
+composer install
+php artisan key:generate
 ```
 
 then inside of .env file, replace set correct values for GOOGLE_GEOCODING_API_KEY and HEREMAPS_GEOCODING_API_KEY variables, and those keys will be sent separately in the email. 
