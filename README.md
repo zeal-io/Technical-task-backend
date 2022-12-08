@@ -1,66 +1,48 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Coordinates resolver
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This project is aimed to evaluate OOP and overall code design skills.
 
-## About Laravel
+## High level overview
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+Main functionality of this project is this: have a /coordinates endpoint which accepts 4 params: country code, city, street and postcode and as a response API should return coordinates (latitude and longitude) of provided address by using geocoding services.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+To make things a bit more challenging, API should support:
+* more than one external geocoding provider (Google maps and Here maps) which would be called sequentially if first provider does not find that address
+* implement layer responsible for caching results to DB (MySQL) 
+* I should be able to use either whole stack (cache+here maps+google maps) or individual geocoder (google maps or here maps) or cached geocoder (cache+google maps for example)
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## What this project already contains 
 
-## Learning Laravel
+It is fully prepared project: 
+* Symfony 5 project with all dependencies already installed
+* Doctrine entity already prepared to be used + repository with two methods required for retrieving and saving (\App\Repository\ResolvedAddressRepository)
+* Already prepared examples how to make geocoding requests to Google Maps and Here maps so you won't need to read documentation how to use those ( \App\Controller\CoordinatesController::gmapsAction and \App\Controller\CoordinatesController::hmapsAction )
+* API endpoint and controller action with DummyGeocoder injected as dependency placeholder.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+## What is expected from you
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+Implement main services which does all the coordination / combined logic: checks DB, if no results, make request to google maps, if fails or not found, check here maps, and store result to DB (even if not found) and return result as JSON. Feel free to copy-paste already mentioned code examples to other classes / components where you feel is right place for it to be.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 2000 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Keep in mind that this code design should support multiple and not fixed number of geocoders, and those geocoders at the same time could be used in isolation somewhere else, so all components should be interchangeable and reusable.
 
-## Laravel Sponsors
+**Also cover at least one component with unit tests.**
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## How to start project
 
-### Premium Partners
+These are following steps to setup project:
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+```
+cp .env.dist .env
+```
 
-## Contributing
+then inside of .env file, replace set correct values for GOOGLE_GEOCODING_API_KEY and HEREMAPS_GEOCODING_API_KEY variables, and those keys will be sent separately in the email. 
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+then go to `http://localhost/coordinates` and it should return 
 
-## Code of Conduct
+```
+{"lat":55.90742079144914,"lng":21.135541627577837}
+```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+JSON. If you want to check different address, then add params to url: http://localhost/coordinates?countryCode=lithuania&city=vilnius&street=gedimino+9&postcode=12345 . 
 
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+And that's it, good luck!
