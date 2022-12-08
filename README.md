@@ -32,7 +32,7 @@ Keep in mind that this code design should support multiple and not fixed number 
 These are following steps to setup project:
 
 ```
-cp .env.dist .env
+cp .env.example .env
 ```
 
 then inside of .env file, replace set correct values for GOOGLE_GEOCODING_API_KEY and HEREMAPS_GEOCODING_API_KEY variables, and those keys will be sent separately in the email. 
