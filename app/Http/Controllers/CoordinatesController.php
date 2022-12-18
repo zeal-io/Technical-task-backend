@@ -18,13 +18,9 @@ class CoordinatesController extends Controller
         $this->geocoder = $geocoder;
     }
 
-    /**
-     * @Route(path="/coordinates", name="geocode")
-     * @param Request $request
-     * @return Response
-     */
     public function geocodeAction(Request $request): Response
     {
+
         $country = $request->get('countryCode', 'rt');
         $city = $request->get('city', 'Cairo');
         $street = $request->get('street', 'street');
@@ -33,11 +29,6 @@ class CoordinatesController extends Controller
        abort(404);
     }
 
-    /**
-     * @Route(path="/gmaps", name="gmaps")
-     * @param Request $request
-     * @return Response
-     */
     public function gmapsAction(Request $request): Response
     {
         $country = $request->get('country', 'Egypt');
@@ -74,11 +65,6 @@ class CoordinatesController extends Controller
         return new JsonResponse($firstResult['geometry']['location']);
     }
 
-    /**
-     * @Route(path="/hmaps", name="hmaps")
-     * @param Request $request
-     * @return Response
-     */
     public function hmapsAction(Request $request): Response
     {
         $country = $request->get('country', 'egypt');
