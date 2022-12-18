@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Service\DummyGeocoder;
 use App\Service\GeocoderInterface;
 use GuzzleHttp\Client;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -11,22 +12,20 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class CoordinatesController extends Controller
 {
-    private GeocoderInterface $geocoder;
+    private DummyGeocoder $geocoder;
 
-    public function __construct(GeocoderInterface $geocoder)
+    public function __construct(DummyGeocoder $geocoder)
     {
         $this->geocoder = $geocoder;
     }
 
     public function geocodeAction(Request $request): Response
     {
-
         $country = $request->get('countryCode', 'rt');
         $city = $request->get('city', 'Cairo');
         $street = $request->get('street', 'street');
         $postcode = $request->get('postcode', '31111');
-
-       abort(404);
+        abort(404);
     }
 
     public function gmapsAction(Request $request): Response
@@ -40,10 +39,10 @@ class CoordinatesController extends Controller
 
         $params = [
             'query' => [
-                'address' => $street,
+                'address'    => $street,
                 'components' => implode('|', ["country:{$country}", "locality:{$city}", "postal_code:{$postcode}"]),
-                'key' => $apiKey
-            ]
+                'key'        => $apiKey,
+            ],
         ];
 
         $client = new Client();
@@ -76,9 +75,9 @@ class CoordinatesController extends Controller
 
         $params = [
             'query' => [
-                'qq' => implode(';', ["country={$country}", "city={$city}", "street={$street}", "postalCode={$postcode}"]),
-                'apiKey' => $apiKey
-            ]
+                'qq'     => implode(';', ["country={$country}", "city={$city}", "street={$street}", "postalCode={$postcode}"]),
+                'apiKey' => $apiKey,
+            ],
         ];
 
         $client = new Client();
