@@ -30,10 +30,11 @@ class CoordinatesController extends Controller
 
     public function gmapsAction(Request $request): Response
     {
-        $country = $request->get('country', 'Egypt');
-        $city = $request->get('city', 'cairo');
-        $street = $request->get('street', 'street');
-        $postcode = $request->get('postcode', '31111');
+        $country = $request->get('country', 'United States');
+        $city = $request->get('city', 'Corbin');
+        $street = $request->get('street', '2651 Cumberland Falls Hwy');
+        $postcode = $request->get('postcode', '40701');
+
 
         $apiKey = $_ENV["GOOGLE_GEOCODING_API_KEY"];
 
@@ -66,10 +67,10 @@ class CoordinatesController extends Controller
 
     public function hmapsAction(Request $request): Response
     {
-        $country = $request->get('country', 'egypt');
-        $city = $request->get('city', 'cairo');
-        $street = $request->get('street', 'street');
-        $postcode = $request->get('postcode', '311111');
+        $country = $request->get('country', 'Egypt');
+        $city = $request->get('city', 'Giza');
+        $street = $request->get('street', '8 Geziret AlArab st');
+        $postcode = $request->get('postcode', '12655');
 
         $apiKey = $_ENV["HEREMAPS_GEOCODING_API_KEY"];
 
