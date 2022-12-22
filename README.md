@@ -15,7 +15,6 @@ To make things a bit more challenging, API should support:
 
 It is fully prepared project: 
 * laravel project with all dependencies already installed
-* Doctrine entity already prepared to be used + repository with two methods required for retrieving and saving (\App\Repository\ResolvedAddressRepository)
 * Already prepared examples how to make geocoding requests to Google Maps and Here maps so you won't need to read documentation how to use those ( \App\Controller\CoordinatesController::gmapsAction and \App\Controller\CoordinatesController::hmapsAction )
 * API endpoint and controller action with DummyGeocoder injected as dependency placeholder.
 
