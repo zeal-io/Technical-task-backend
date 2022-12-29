@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\ResolvedAddress;
 
 return new class extends Migration {
     /**
@@ -17,9 +18,10 @@ return new class extends Migration {
             $table->string('country_code', 3);
             $table->string('city');
             $table->string('street');
-            $table->string('postcode',16);
-            $table->string('lat',32)->nullable();
-            $table->string('lng',32)->nullable();
+            $table->integer('postcode');
+            $table->string('lat', 32)->nullable();
+            $table->string('lng', 32)->nullable();
+            $table->enum('source', [ResolvedAddress::SOURCE_GOOGLE, ResolvedAddress::SOURCE_HERE]);
             $table->timestamps();
         });
     }

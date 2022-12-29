@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Service\GeocoderInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider

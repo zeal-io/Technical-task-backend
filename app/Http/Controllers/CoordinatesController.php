@@ -2,101 +2,34 @@
 
 namespace App\Http\Controllers;
 
-use App\Service\DummyGeocoder;
-use App\Service\GeocoderInterface;
-use GuzzleHttp\Client;
+use App\Http\Requests\GetGeocodeRequest;
+use App\Service\GetCoordinatesService;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 
 class CoordinatesController extends Controller
 {
-    private DummyGeocoder $geocoder;
 
-    public function __construct(DummyGeocoder $geocoder)
+    public function geocodeAction(GetGeocodeRequest $request, GetCoordinatesService $geocoderService): Response
     {
-        $this->geocoder = $geocoder;
-    }
+        /**
+         * @todo use JSON-API package to handel the request DTO and the response also
+         */
+        $country = $request->get('country');
+        $city = $request->get('city');
+        $street = $request->get('street');
+        $postcode = $request->get('postcode');
+        $source = $request->get('source');
+        $forceRefresh = (bool) $request->get('force_refresh');
 
-    public function geocodeAction(Request $request): Response
-    {
-        $country = $request->get('countryCode', 'rt');
-        $city = $request->get('city', 'Cairo');
-        $street = $request->get('street', 'street');
-        $postcode = $request->get('postcode', '31111');
-        abort(404);
-    }
+        $coordinates = $geocoderService->execute($country, $city, $street, $postcode, $source, $forceRefresh);
 
-    public function gmapsAction(Request $request): Response
-    {
-        $country = $request->get('country', 'United States');
-        $city = $request->get('city', 'Corbin');
-        $street = $request->get('street', '2651 Cumberland Falls Hwy');
-        $postcode = $request->get('postcode', '40701');
-
-
-        $apiKey = $_ENV["GOOGLE_GEOCODING_API_KEY"];
-
-        $params = [
-            'query' => [
-                'address'    => $street,
-                'components' => implode('|', ["country:{$country}", "locality:{$city}", "postal_code:{$postcode}"]),
-                'key'        => $apiKey,
-            ],
-        ];
-
-        $client = new Client();
-
-        $response = $client->get('https://maps.googleapis.com/maps/api/geocode/json', $params);
-
-        $data = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
-
-        if (count($data['results']) === 0) {
-            return new JsonResponse([]);
+        if ($coordinates === null) {
+            return new JsonResponse(['error' => 'Not found'], 404);
         }
-
-        $firstResult = $data['results'][0];
-
-        if ($firstResult['geometry']['location_type'] !== 'ROOFTOP') {
-            return new JsonResponse([]);
-        }
-
-        return new JsonResponse($firstResult['geometry']['location']);
-    }
-
-    public function hmapsAction(Request $request): Response
-    {
-        $country = $request->get('country', 'Egypt');
-        $city = $request->get('city', 'Giza');
-        $street = $request->get('street', '8 Geziret AlArab st');
-        $postcode = $request->get('postcode', '12655');
-
-        $apiKey = $_ENV["HEREMAPS_GEOCODING_API_KEY"];
-
-        $params = [
-            'query' => [
-                'qq'     => implode(';', ["country={$country}", "city={$city}", "street={$street}", "postalCode={$postcode}"]),
-                'apiKey' => $apiKey,
-            ],
-        ];
-
-        $client = new Client();
-
-        $response = $client->get('https://geocode.search.hereapi.com/v1/geocode', $params);
-
-        $data = json_decode($response->getBody()->getContents(), true, 512, JSON_THROW_ON_ERROR);
-
-        if (count($data['items']) === 0) {
-            return new JsonResponse([]);
-        }
-
-        $firstItem = $data['items'][0];
-
-        if ($firstItem['resultType'] !== 'houseNumber') {
-            return new JsonResponse([]);
-        }
-
-        return new JsonResponse($firstItem['position']);
+        return new JsonResponse(
+            ['coordinates' => ['lat' => $coordinates->getLat(), 'lng' => $coordinates->getLng()]],
+            200
+        );
     }
 }

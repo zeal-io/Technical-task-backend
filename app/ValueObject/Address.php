@@ -7,9 +7,9 @@ class Address
     private string $country;
     private string $city;
     private string $street;
-    private string $postcode;
+    private int $postcode;
 
-    public function __construct(string $country, string $city, string $street, string $postcode)
+    public function __construct(string $country, string $city, string $street, int $postcode)
     {
         $this->country = $country;
         $this->city = $city;
@@ -32,7 +32,7 @@ class Address
         return $this->street;
     }
 
-    public function getPostcode(): string
+    public function getPostcode(): int
     {
         return $this->postcode;
     }
