@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ResolvedAddress extends Model
 {
     use HasFactory;
+
+    public const SOURCE_GOOGLE = 'google';
+    public const SOURCE_HERE = 'here';
 }

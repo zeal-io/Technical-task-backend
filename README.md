@@ -1,47 +1,10 @@
 # Coordinates resolver
-
-This project is aimed to evaluate OOP and overall code design skills.
-
-## High level overview
-
-Main functionality of this project is this: have a /coordinates endpoint which accepts 4 params: country code, city, street and postcode and as a response API should return coordinates (latitude and longitude) of provided address by using geocoding services.
-
-To make things a bit more challenging, API should support:
-* more than one external geocoding provider (Google maps and Here maps) which would be called sequentially if first provider does not find that address
-* implement layer responsible for caching results to DB (MySQL) 
-* I should be able to use either whole stack (cache+here maps+google maps) or individual geocoder (google maps or here maps) or cached geocoder (cache+google maps for example)
-
-## What this project already contains 
-
-It is fully prepared project: 
-* laravel project with all dependencies already installed
-* Already prepared examples how to make geocoding requests to Google Maps and Here maps so you won't need to read documentation how to use those ( \App\Controller\CoordinatesController::gmapsAction and \App\Controller\CoordinatesController::hmapsAction )
-* API endpoint and controller action with DummyGeocoder injected as dependency placeholder.
-
-## What is expected from you
-
-Implement main services which does all the coordination / combined logic: checks DB, if no results, make request to google maps, if fails or not found, check here maps, and store result to DB (even if not found) and return result as JSON. Feel free to copy-paste already mentioned code examples to other classes / components where you feel is right place for it to be.
-
-Keep in mind that this code design should support multiple and not fixed number of geocoders, and those geocoders at the same time could be used in isolation somewhere else, so all components should be interchangeable and reusable.
-
-**Also cover at least one component with unit tests.**
-
-## How to start project
-
-These are following steps to setup project:
-
-```
-cp .env.example .env
-composer install
-php artisan key:generate
-```
-
-then inside of .env file, replace set correct values for GOOGLE_GEOCODING_API_KEY and HEREMAPS_GEOCODING_API_KEY variables, and those keys will be sent separately in the email. 
-
-then go to `http://localhost/coordinates` and it should return 
-
-```
-{"lat":55.90742079144914,"lng":21.135541627577837}
-```
-
-And that's it, good luck!
+This is a simple tool to resolve coordinates from google and here APIs and it will be cached in db.
+## structure
+* I didn't change the project structure and I used the same structure of the project.
+* It not follows all DDD structure, but it's a good for the task.
+* I just added some new services as Application services.
+* I didn't create infrastructure or Domain layer to avoid over engineering.
+## Test Coverage
+It is fully covered by Feature test: tests/Feature/CoordinatesTest.php
+Unit test just for the main service: tests/Unit/GetCoordinatesServiceTest.php

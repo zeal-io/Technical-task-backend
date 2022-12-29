@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Service;
+namespace App\Service\Geocoding;
 
 use App\ValueObject\Address;
 use App\ValueObject\Coordinates;
 
 interface GeocoderInterface
 {
-    public function geocode(Address $address): ?Coordinates;
+    public function getCoordinates(Address $address): ?Coordinates;
 }
